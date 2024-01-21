@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @WebServlet(value = "/time", name = "timeServlet")
-public class CurrentTime extends HttpServlet {
+public class TimeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/html; charset=utf-8");
