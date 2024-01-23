@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -16,20 +15,20 @@ public class TimeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/html; charset=utf-8");
-        resp.getWriter().write(LocalDateTime
-                .now(ZoneId.of("UTC"))
-                .format(DateTimeFormatter
-                        .ofPattern("yyyy-MM-dd HH:mm:ss")) + " " + getUTC(getQuery(req)));
+        resp.getWriter().write(buildResponse(req));
         resp.getWriter().close();
     }
 
-    private String getQuery(HttpServletRequest req) {
-        Optional<String> optionalQuery = Optional.ofNullable(req.getQueryString());
-        return optionalQuery.orElseGet(() -> "timezone=UTC");
+    private String buildResponse(HttpServletRequest req) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        sb.append(" ");
+        sb.append(getQuery(req));
+        return sb.toString();
     }
 
-    private String getUTC(String query) {
-        String[] queryKeyValue = query.split("=");
-        return queryKeyValue[1];
+    private String getQuery(HttpServletRequest req) {
+        Optional<String> optionalQuery = Optional.ofNullable(req.getParameter("timezone"));
+        return optionalQuery.orElseGet(() -> "UTC");
     }
 }

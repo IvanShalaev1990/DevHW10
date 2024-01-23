@@ -14,18 +14,19 @@ import java.time.ZoneId;
 public class TimezoneValidateFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain chain) throws IOException, ServletException {
-        if (req.getQueryString() == null){
+        if (req.getParameter("timezone") == null){
             chain.doFilter(req, resp);
         }
         try {
-            String[] queryParams = req.getQueryString().split("=");
-            ZoneId.of(queryParams[1]);
+            String timezone = req.getParameter("timezone");
+            ZoneId.of(timezone);
+            chain.doFilter(req, resp);
         }catch (Exception exception){
             resp.setStatus(400);
             resp.setContentType("text/html; charset=utf-8");
             resp.getWriter().write("Invalid timezone");
             resp.getWriter().close();
         }
-        chain.doFilter(req, resp);
+
     }
 }
